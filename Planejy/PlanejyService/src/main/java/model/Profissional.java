@@ -1,10 +1,10 @@
 package model;
 
-import java.time.LocalDate;
+import java.util.Random;
 
 /**
- * Objeto Artigo para ser usado de referencia para populacao do Banco de Dados
- * ou para construcao de JSON para o frontend
+ * Objeto Profissional para ser usado de referencia para populacao do Banco de
+ * Dados ou para construcao de JSON para o frontend
  * 
  * Hierarquia de chamada: Aplicacao -> Service -> DAO -> Model
  * Aqui sao feitos os gets e construcao de JSON's
@@ -14,143 +14,128 @@ import java.time.LocalDate;
  * @method hasnext/add (para pilha simplismente encadeada)
  * @method toJson
  */
-public class Artigo {
-    private int chave;
-    private String imagem;
-    private String imagemAlt;
-    private String titulo;
-    private String conteudo;
-    private String resumo;
-    private String autor;
-    private LocalDate dataFabricacao;
+public class Profissional {
+    private int registro;
+    private String nome;
+    private String servico;
+    private Float preco;
+    private String foto;
+    private String facebook;
+    private String twitter;
+    private String instagram;
+    private String linkedin;
     private double nota;
     private int numNotas;
     private int notaUsuario;
-    private String classificacaoCrua;
     private String classificacao[];
     private double classificacaoFinal;
-    private boolean jaEntrou;
-    private Artigo next;
+    private boolean premium;
+    private Profissional next;
 
     /**
      * Construtor padrao
      */
-    public Artigo() {
-        this.chave = -1;
-        this.imagem = "";
-        this.imagemAlt = "";
-        this.titulo = "";
-        this.conteudo = "";
-        this.resumo = "";
-        this.autor = "";
-        this.dataFabricacao = LocalDate.now();
+    public Profissional() {
+        this.registro = -1;
+        this.nome = "";
+        this.servico = "";
+        this.preco = (float) -1.0;
+        this.foto = "";
+        this.facebook = "";
+        this.twitter = "";
+        this.instagram = "";
+        this.linkedin = "";
         this.nota = 0;
-        this.notaUsuario = 0;
         this.numNotas = 0;
+        this.notaUsuario = 0;
         this.classificacao = null;
-        this.classificacaoCrua = null;
         this.classificacaoFinal = 0;
-        this.jaEntrou = false;
+        this.premium = false;
         this.next = null;
     }
 
-    public Artigo(int chave, String imagem, String imagemAlt, String titulo, String conteudo, String resumo,
-            String autor, LocalDate dataFabricacao, double nota, int numNotas, int notaUsuario) {
-        this.chave = chave;
-        this.imagem = imagem;
-        this.imagemAlt = imagemAlt;
-        this.titulo = titulo;
-        this.conteudo = conteudo;
-        this.resumo = resumo;
-        this.autor = autor;
-        this.dataFabricacao = dataFabricacao;
+    public Profissional(int registro, String nome, String servico, Float preco, String foto, String facebook,
+            String twitter, String instagram, String linkedin, double nota, int numNotas, int notaUsuario,
+            String classificacao) {
+        this.registro = registro;
+        this.nome = nome;
+        this.servico = servico;
+        this.preco = preco;
+        this.foto = foto;
+        this.facebook = facebook;
+        this.twitter = twitter;
+        this.instagram = instagram;
+        this.linkedin = linkedin;
         this.nota = nota;
         this.numNotas = numNotas;
         this.notaUsuario = notaUsuario;
-        this.classificacao = null;
-        this.classificacaoCrua = null;
-        this.classificacaoFinal = 0;
-        this.jaEntrou = false;
-        this.next = null;
-    }
-
-    public Artigo(int chave, String imagem, String imagemAlt, String titulo, String conteudo, String resumo,
-            String autor, LocalDate dataFabricacao, double nota, int numNotas, String classificacao, boolean jaEntrou) {
-        this.chave = chave;
-        this.imagem = imagem;
-        this.imagemAlt = imagemAlt;
-        this.titulo = titulo;
-        this.conteudo = conteudo;
-        this.resumo = resumo;
-        this.autor = autor;
-        this.dataFabricacao = dataFabricacao;
-        this.nota = nota;
-        this.numNotas = numNotas;
-        this.notaUsuario = 0;
-        this.classificacaoCrua = classificacao;
         this.classificacao = classificacao.split(",");
         this.classificacaoFinal = 0;
-        this.jaEntrou = jaEntrou;
+        this.premium = false;
         this.next = null;
     }
 
-    public int getChave() {
-        return this.chave;
+    public int getRegistro() {
+        return this.registro;
     }
 
-    public String getImagem() {
-        return this.imagem;
+    public String getNome() {
+        return this.nome;
     }
 
-    public String getImagemAlt() {
-        return this.imagemAlt;
+    public String getServico() {
+        return this.servico;
     }
 
-    public String getTitulo() {
-        return this.titulo;
+    public Float getPreco() {
+        return this.preco;
     }
 
-    public String getConteudo() {
-        return this.conteudo;
+    public String getFoto() {
+        return this.foto;
     }
 
-    public String getResumo() {
-        return this.resumo;
+    public String getFacebook() {
+        return this.facebook;
     }
 
-    public int getNumNotas() {
-        return this.numNotas;
+    public String getTwitter() {
+        return this.twitter;
     }
 
-    public String getAutor() {
-        return this.autor;
+    public String getInstagram() {
+        return this.instagram;
     }
 
-    public LocalDate getDataFabricacao() {
-        return this.dataFabricacao;
+    public String getLinkedin() {
+        return this.linkedin;
     }
 
     public Double getNota() {
         return this.nota;
     }
 
-    public String[] getClassificacao() {
-        return this.classificacao;
+    public int getNumNotas() {
+        return this.numNotas;
     }
 
-    public String getClassificacaoCrua() {
-        return this.classificacaoCrua;
+    public int getNotaUsuario() {
+        return this.notaUsuario;
+    }
+
+    public String[] getClassificacao() {
+        return this.classificacao;
     }
 
     public double getClassificacaoFinal() {
         return this.classificacaoFinal;
     }
 
-    public boolean jaEntrou() {
-        return this.jaEntrou;
+    public boolean getPremium() {
+        return this.premium;
     }
 
-    public Artigo getNext() {
+    public Profissional getNext() {
         return this.next;
     }
 
@@ -172,7 +157,7 @@ public class Artigo {
      * 
      * @param novo Artigo a ser inserido
      */
-    public void add(Artigo novo) {
+    public void add(Profissional novo) {
         novo.next = this.next;
         this.next = novo;
     }
@@ -291,14 +276,14 @@ public class Artigo {
     public void ordenar() {
         // Contar o tamanho da pilha
         int n = 0;
-        Artigo last = this;
+        Profissional last = this;
         while (last.hasNext()) {
             n++;
             last = last.getNext();
         }
 
         // Desempilhar
-        Artigo array[] = new Artigo[n];
+        Profissional array[] = new Profissional[n];
         last = this.next;
         for (int i = 0; i < n; i++) {
             array[i] = last;
@@ -310,7 +295,7 @@ public class Artigo {
         // Ordenar
         // Array para contar o numero de ocorrencias de cada elemento
         int count[] = new int[101];
-        Artigo ordenado[] = new Artigo[n];
+        Profissional ordenado[] = new Profissional[n];
 
         // Inicializar cada posicao do array de contagem
         for (int i = 0; i < count.length; i++) {
@@ -339,7 +324,7 @@ public class Artigo {
         }
 
         for (int i = 1; i < n; i++) {
-            Artigo tmp = array[i];
+            Profissional tmp = array[i];
             int j = i - 1;
 
             while ((j >= 0) && (array[j].classificacaoFinal < tmp.classificacaoFinal)) {
@@ -347,6 +332,19 @@ public class Artigo {
                 j--;
             }
             array[j + 1] = tmp;
+        }
+
+        // Decidir aleatoriamente pelos premiums
+        Random gerador = new Random();
+        long seed = (long) (array[1].registro + array[4].registro + array[8].registro + array[12].registro + array[15].registro);
+        gerador.setSeed(seed);
+        int numeroDePremiums = gerador.nextInt(2) + 1;
+        int posicaoPremium[] = new int[numeroDePremiums];
+        for (int i = 0; i < numeroDePremiums; i++) {
+            posicaoPremium[i] = gerador.nextInt(4);
+        }
+        for (int i = 0; i < numeroDePremiums; i++) {
+            array[posicaoPremium[i]].premium = true;
         }
 
         // Empilhar
@@ -363,19 +361,18 @@ public class Artigo {
      * @param artigo primeiro artigo da lista
      * @return String JSON com os dados da pilha
      */
-    private String toJsonRec(Artigo artigo) {
+    public String toJsonRec(Profissional tmp) {
         String Json = "";
-        if (artigo != null) {
+        if (tmp != null) {
             // empilhamento recursivo
-            Json += toJsonRec(artigo.next);
+            Json += toJsonRec(tmp.next);
             // construcao da string apos empilhamento
             Json += "{ ";
-            Json += "\"chave\":" + artigo.chave + ", \"imagem\":\"" + artigo.imagem + "\", \"imagemAlt\":\""
-                    + artigo.imagemAlt + "\", \"titulo\":\"" + artigo.titulo + "\", \"conteudo\":\"" + artigo.conteudo
-                    + "\", \"resumo\":\"" + artigo.resumo + "\", \"autor\":\"" + artigo.autor
-                    + "\", \"dataFabricacao\":\"" + artigo.dataFabricacao + "\", \"nota\":\"" + artigo.nota
-                    + "\", \"notaUsuario\":\"" + artigo.notaUsuario + "\", \"numNotas\":\"" + artigo.numNotas
-                    + "\", \"classificacaoCrua\":\"" + artigo.classificacaoCrua + "\", \"jaEntrou\":\"" + artigo.jaEntrou + "\"";
+            Json += "\"registro\":" + tmp.registro + ",\"nome\":\"" + tmp.nome + "\",\"servico\":\"" + tmp.servico
+                    + "\",\"preco\":" + tmp.preco + ",\"foto\":\"" + tmp.foto + "\",\"facebook\":\"" + tmp.facebook
+                    + "\",\"twitter\":\"" + tmp.twitter + "\",\"instagram\":\"" + tmp.instagram + "\",\"linkedin\":\""
+                    + tmp.linkedin + "\",\"nota\":\"" + tmp.nota + "\",\"notaUsuario\":\"" + tmp.notaUsuario
+                    + "\",\"numNotas\":\"" + tmp.numNotas + "\",\"brilhinho\":\"" + tmp.premium + "\"";
             Json += "}";
             Json += ",";
         }
@@ -394,21 +391,20 @@ public class Artigo {
         String Json = "";
         // Se for pilha, chamar toJsonRec
         if (this.hasNext()) {
-            Artigo last = this.next;
+            Profissional last = this.next;
             Json += toJsonRec(last);
             Json = Json.substring(0, Json.length() - 1);
             // limpeza da variavel
             last = null;
         } else {
             Json += "{ ";
-            Json += "\"chave\":" + chave + ", \"imagem\":\"" + imagem + "\", \"imagemAlt\":\"" + imagemAlt
-                    + "\", \"titulo\":\"" + titulo + "\", \"conteudo\":\"" + conteudo + "\", \"resumo\":\"" + resumo
-                    + "\", \"autor\":\"" + autor + "\", \"dataFabricacao\":\"" + dataFabricacao + "\", \"nota\":\""
-                    + nota + "\", \"notaUsuario\":\"" + notaUsuario + "\", \"numNotas\":\"" + numNotas
-                    + "\", \"classificacaoCrua\":\"" + classificacaoCrua + "\", \"jaEntrou\":\"" + jaEntrou + "\"";
+            Json += "\"registro\":" + registro + ",\"nome\":\"" + nome + "\",\"servico\":\"" + servico + "\",\"preco\":"
+                    + preco + ",\"foto\":\"" + foto + "\",\"facebook\":\"" + facebook + "\",\"twitter\":\"" + twitter
+                    + "\",\"instagram\":" + instagram + "\",\"linkedin\":\"" + linkedin + "\",\"nota\":\"" + nota
+                    + "\",\"notaUsuario\":\"" + notaUsuario + "\",\"numNotas\":\"" + numNotas + "\",\"brilhinho\":\""
+                    + premium + "\"";
             Json += "}";
         }
         return Json;
     }
 }
-
