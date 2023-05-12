@@ -1,4 +1,4 @@
-Repositório do projeto Planejy do Trabalho Interdisciplinar II: Banco de Dados e Sistemas Inteligentes.
+Repositório do projeto Planejy do Trabalho Interdisciplinar II: Banco de Dados e Sistemas Inteligentes do curso de Ciência da Computação da PUC Minas - Pontifícia Universidade Católica de Minas Gerais.
 
 Grupo composto por:
 - Gabriel Ramos Ferreira
