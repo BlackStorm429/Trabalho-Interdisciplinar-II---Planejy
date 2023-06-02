@@ -23,7 +23,7 @@ public class Usuario {
     private String nick;
     private String senha;
     private String email;
-    private String genero;
+    private String sexo;
     private String token;
     private SimpleDateFormat nascimentoFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -37,7 +37,7 @@ public class Usuario {
         this.nick = "";
         this.senha = "";
         this.email = "";
-        this.genero = "";
+        this.sexo = "";
         this.token = "";
     }
 
@@ -65,7 +65,7 @@ public class Usuario {
         } catch (ParseException e) {
         }
         this.nick = tmp[3];
-        this.genero = tmp[4];
+        this.sexo = tmp[4];
     }
 
     /**
@@ -80,49 +80,83 @@ public class Usuario {
      * @param genero
      * @param token
      */
-    public Usuario(int id, String nome, Date nascimento, String nick, String senha, String email, String genero,
-            String token) {
-        this.id = id;
-        this.nome = nome;
-        this.nascimento = nascimento;
-        this.nick = nick;
-        this.senha = senha;
-        this.email = email;
-        this.genero = genero;
-        this.token = token;
+    public Usuario(int id, String nome, Date nascimento, String nick, String senha, String email, String sexo, String token) {
+        setId(id);
+        setNome(nome);
+        setNascimento(nascimento);
+        setNick(nick);
+        setSenha(senha);
+        setEmail(email);
+        setSexo(sexo);
+        setToken(token);
     }
 
     public int getId() {
         return this.id;
     }
+    
+    public void setId(int id) {
+    	 this.id = id;
+    }
 
     public String getNome() {
         return this.nome;
     }
+    
+    public void setNome(String nome) {
+   	 this.nome = nome;
+   }
 
     public Date getNascimento() {
         return this.nascimento;
     }
-
+    
+    public void setNascimento(Date nascimento) {
+   	 	this.nascimento = nascimento;
+    }
     public String getNick() {
         return this.nick;
     }
+    public void setNick(String nick) {
+   	 this.nick = nick;
+   }
 
     public String getSenha() {
         return this.senha;
     }
+    
+    public void setSenha(String senha) {
+   	 this.senha = senha;
+   }
 
     public String getEmail() {
         return this.email;
     }
+    
+    public void setEmail(String email) {
+   	 this.email = email;
+   }
 
-    public String getGenero() {
-        return this.genero;
+    public String getSexo() {
+        return this.sexo;
     }
+    
+    public void setSexo(String sexo) {
+   	 this.sexo = sexo;
+   }
 
     public String getToken() {
         return this.token;
     }
+    
+    public void setToken(String token) {
+   	 this.token = token;
+   }
+    
+    @Override
+	public boolean equals(Object obj) {
+		return (this.getId() == ((Usuario) obj).getId());
+	}
 
     /**
      * Metodo para geracao de arquivo JSON contendo os dados do usuario
@@ -133,7 +167,7 @@ public class Usuario {
         String Json = "";
         Json += "{ ";
         Json += "\"id\":" + this.id + ", \"nome\":\"" + this.nome + "\", \"nascimento\":\"" + this.nascimento
-                + "\", \"nick\":\"" + this.nick + "\", \"email\":\"" + this.email + "\", \"genero\":\"" + this.genero
+                + "\", \"nick\":\"" + this.nick + "\", \"email\":\"" + this.email + "\", \"genero\":\"" + this.sexo
                 + "\"";
         Json += "}";
         return Json;
