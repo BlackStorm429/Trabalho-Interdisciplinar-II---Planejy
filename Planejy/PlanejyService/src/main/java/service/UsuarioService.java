@@ -1,9 +1,11 @@
 package service;
 
-import dao.UsuarioDAO;
 import model.Usuario;
+import dao.UsuarioDAO;
 import spark.Request;
 import spark.Response;
+import java.util.Date;
+
 
 /**
  * Servico de tratamento de response/request para get/post do objeto Usuario
@@ -77,14 +79,19 @@ public class UsuarioService {
 		String nick = request.params(":nick");
 		String email = request.params(":email");
 		String senha = request.body();
+		Date nascimento = null;
+		int id = usuarioDAO.getMaxId() + 1;
+		
+		Usuario usuario = new Usuario(id, nome, nascimento, nick, senha, email, "", "");
+		//System.out.println("Passou aqui no insert e deu erro!!");
+				
 		/*
 		System.out.println(nome);
 		System.out.println(nick);
 		System.out.println(email);
 		System.out.println(senha);
 		*/
-		
-		String result = usuarioDAO.insert(nome, nick, senha, email);
+		String result = usuarioDAO.insert(usuario);
 
 		response.status(200); // success ??
 		respostaJSON = result;
@@ -99,7 +106,7 @@ public class UsuarioService {
 	 * 
 	 * @see Usuario.java
 	 * @see usuarioDAO.java
-	 * @body email;nome;nascimento;nick;genero
+	 * @body email;nome;nascimento;nick;sexo
 	 * @request token
 	 * @request id
 	 * @response200 bem sucedido
@@ -230,33 +237,6 @@ public class UsuarioService {
 
 		return respostaJSON;
 	}
-
 	
-	/**
-	 * Metodo POST para atualizar a classificacao de um usuario
-	 * 
-	 * Utiliza o metodo usuarioDAO.addCategoria(tokenUsuario, categorias)
-	 * 
-	 * @see usuarioDAO.java
-	 * @body categorias a serem atualizadas
-	 * @request tokenUsuario
-	 * @response200 atualizado
-	 * @response404 nao atualizado
-	 * @return response
-	 */
-	public Object addCategoria(Request request, Response response) {
-		String tokenUsuario = request.params(":tokenUsuario");
-		String categorias[] = request.body().split(";");
-		boolean result = usuarioDAO.addCategoria(tokenUsuario, categorias);
 
-		if (result) {
-			response.status(200); // success
-			respostaJSON = "categoria atualizada";
-		} else {
-			response.status(404); // success ??
-			respostaJSON = "erro ao atualizar";
-		}
-
-		return respostaJSON;
-	}
 }
