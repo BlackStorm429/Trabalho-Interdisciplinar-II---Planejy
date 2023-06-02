@@ -43,7 +43,7 @@ public class NotaService {
 	public Object get(Request request, Response response) {
 		String tokenUsuario = request.params(":tokenUsuario");
 		Nota nota = (Nota) notaDAO.get(tokenUsuario);
-
+		
 		if (nota != null) {
 			response.status(200); // success
 			respostaJSON = "";
@@ -104,6 +104,7 @@ public class NotaService {
 	public Object delete(Request request, Response response) {
 		String tokenUsuario = request.params(":tokenUsuario");
 		String chave = request.params(":chave");
+
 		boolean result = notaDAO.delete(tokenUsuario, chave);
 
 		if (result) {
@@ -133,7 +134,7 @@ public class NotaService {
 	 */
 	public Object update(Request request, Response response) {
 		String tokenUsuario = request.params(":tokenUsuario");
-		long chave = Long.parseLong(request.params(":chave"));
+		int chave = Integer.parseInt(request.params(":chave"));
 		String body = request.body();
 		boolean result = notaDAO.update(tokenUsuario, chave, body);
 
