@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.security.*;
 import java.math.*;
 
+
 /**
  * Classe UsuarioDAO que herda a superclasse DAO - Data Access Object
  * Conexao com o BD e' feita pela classe Pai
@@ -26,6 +27,8 @@ import java.math.*;
  * @method mudarSenhaToke
  */
 public class UsuarioDAO extends DAO {
+	
+	private int maxId = 0;
 	/**
 	 * Construtor padrao que referencia a classe Pai
 	 */
@@ -39,6 +42,13 @@ public class UsuarioDAO extends DAO {
 	 */
 	public void finalize() {
 		close();
+	}
+	/**
+	 * Metodo para retornar valor Id atual inserido no banco
+	 * @return
+	 */
+	public int getMaxId() {
+		return maxId;
 	}
 
 	/**
@@ -74,7 +84,7 @@ public class UsuarioDAO extends DAO {
 	 */
 	public Usuario get(String token) {
 		// Objeto vazio para popular
-		Usuario usuario = new Usuario();
+		Usuario usuario = null;
 		try {
 			// Conexao
 			String sql = "SELECT * FROM usuario WHERE token = ?";
@@ -197,11 +207,13 @@ public class UsuarioDAO extends DAO {
 	 * @param email
 	 * @return Objeto JSON com o status de constraint do BD
 	 */
-	public String insert(String nome, String nick, String senha, String email) {
+	public String insert(Usuario usuario) {
 		// Objeto JSON com o status da constraint
 		String result = "";
 		// Criptografia da senha
-		senha = md5(senha);
+		usuario.setSenha( md5(usuario.getSenha())); 
+		// Gerar Id automaticamente
+		this.maxId = (usuario.getId() > this.maxId) ? usuario.getId() : this.maxId;
 		try {
 			// objetos de conexao
 			PreparedStatement stmt;
@@ -212,36 +224,27 @@ public class UsuarioDAO extends DAO {
 			sql = "SELECT nick FROM usuario WHERE nick = ?";
 
 			stmt = getConnection().prepareStatement(sql);
-			stmt.setString(1, nick);
+			stmt.setString(1, usuario.getNick());
 			rs = stmt.executeQuery();
-
-			if (!rs.next()) {
-				result += ("{ \"Usuario\": [{ \"nick\":true , ");
-			} else {
+			
+			if(rs.next()) {
 				result += ("{ \"Usuario\": [{ \"nick\":false , ");
+			}else {
+				result += ("{ \"Usuario\": [{ \"nick\":true , ");
 			}
 
 			// Validacao de Email
 			sql = "SELECT email FROM usuario WHERE email = ?";
 
 			stmt = getConnection().prepareStatement(sql);
-			stmt.setString(1, email);
+			stmt.setString(1, usuario.getEmail());
 			rs = stmt.executeQuery();
 
-			if (!rs.next()) {
-				result += ("\"email\":true , ");
-			} else {
+			if (rs.next()) {
 				result += ("\"email\":false , ");
+			} else {
+				result += ("\"email\":true , ");
 			}
-
-			// Insercao propriamente dita
-			sql = "INSERT INTO usuario (nome, nick, senha, email) VALUES (?, ?, ?, ?)";
-			stmt = getConnection().prepareStatement(sql);
-			stmt.setString(1, nome);
-			stmt.setString(2, nick);
-			stmt.setString(3, senha);
-			stmt.setString(4, email);
-			stmt.execute();
 			
 
 			// Cadastros subsequentes
@@ -254,8 +257,22 @@ public class UsuarioDAO extends DAO {
 			stmt.execute();
 			*/
 
+			// realiza cadastro se validação de email e/ou nick foram realizadas com sucesso 
+			if(result.contains("false")) {
+				result += ("\"sucesso\":false } ] }");
+			}else {
+				result += ("\"sucesso\":true } ] }");
+				// Insercao propriamente dita
+				sql = "INSERT INTO usuario (nome, nick, email, senha, id) VALUES (?, ?, ?, ?, ?)";
+				stmt = getConnection().prepareStatement(sql);
+				stmt.setString(1, usuario.getNome());
+				stmt.setString(2, usuario.getNick());
+				stmt.setString(3, usuario.getEmail());
+				stmt.setString(4, usuario.getSenha());
+				stmt.setInt(5, usuario.getId());
+				stmt.execute();
+			}
 			// Fim de conexao
-			result += ("\"sucesso\":true } ] }");
 			stmt.close();
 		} catch (Exception e) {
 			result += ("\"sucesso\":false } ] }");
@@ -294,7 +311,7 @@ public class UsuarioDAO extends DAO {
 			ResultSet rs;
 
 			// Validacao de Nick
-			sql = "SELECT nick FROM planejy.usuario WHERE nick = ?";
+			sql = "SELECT nick FROM usuario WHERE nick = ?";
 
 			stmt = getConnection().prepareStatement(sql);
 			stmt.setString(1, usuario.getNick());
@@ -307,7 +324,7 @@ public class UsuarioDAO extends DAO {
 			}
 
 			// Validacao de Email
-			sql = "SELECT email FROM planejy.usuario WHERE email = ?";
+			sql = "SELECT email FROM usuario WHERE email = ?";
 
 			stmt = getConnection().prepareStatement(sql);
 			stmt.setString(1, usuario.getEmail());
@@ -320,7 +337,7 @@ public class UsuarioDAO extends DAO {
 			}
 
 			// Update propriamente dito
-			sql = "UPDATE planejy.usuario SET email = ?, nome = ?, nascimento = ?, nick = ?, genero = ? ";
+			sql = "UPDATE usuario SET email = ?, nome = ?, nascimento = ?, nick = ?, sexo = ? ";
 			sql += "WHERE id = ? AND token = ?";
 
 			stmt = getConnection().prepareStatement(sql);
@@ -328,7 +345,7 @@ public class UsuarioDAO extends DAO {
 			stmt.setString(2, usuario.getNome());
 			stmt.setDate(3, new Date(usuario.getNascimento().getTime()));
 			stmt.setString(4, usuario.getNick());
-			stmt.setString(5, usuario.getGenero());
+			stmt.setString(5, usuario.getSexo());
 			stmt.setInt(6, id);
 			stmt.setString(7, token);
 			stmt.executeUpdate();
@@ -364,7 +381,7 @@ public class UsuarioDAO extends DAO {
 			// Recuperar o ID equivalente ao email e Conexao
 			PreparedStatement stmt;
 			ResultSet rs;
-			String sql = "SELECT id FROM planejy.usuario WHERE email = ?";
+			String sql = "SELECT id FROM usuario WHERE email = ?";
 
 			stmt = getConnection().prepareStatement(sql);
 			stmt.setString(1, email);
@@ -379,7 +396,7 @@ public class UsuarioDAO extends DAO {
 			// Se o email existir o token de recuperacao de senha sera registrado a conta
 			if (id != -1) {
 				// Nova conexao
-				sql = "UPDATE planejy.usuario SET token = ? WHERE id = ?";
+				sql = "UPDATE usuario SET token = ? WHERE id = ?";
 
 				stmt = getConnection().prepareStatement(sql);
 				stmt.setString(1, token);
@@ -419,7 +436,7 @@ public class UsuarioDAO extends DAO {
 			PreparedStatement stmt;
 			ResultSet rs;
 			String sql = "";
-			sql += "SELECT id FROM planejy.usuario WHERE token = ?";
+			sql += "SELECT id FROM usuario WHERE token = ?";
 
 			stmt = getConnection().prepareStatement(sql);
 			stmt.setString(1, token);
@@ -435,7 +452,7 @@ public class UsuarioDAO extends DAO {
 			// Efetivar a mudanca de senha
 			if (id != -1) {
 				// Conexao
-				sql = "UPDATE planejy.usuario SET senha = ? WHERE id = ?";
+				sql = "UPDATE usuario SET senha = ? WHERE id = ?";
 
 				stmt = getConnection().prepareStatement(sql);
 				stmt.setString(1, senha);
@@ -449,64 +466,5 @@ public class UsuarioDAO extends DAO {
 		}
 		return id;
 	}
-
-	/**
-	 * Metodo para incrementar a categoria de um usuario
-	 * 
-	 * O metodo fara o incremento no banco de dados de todas as categorias enviadas
-	 * 
-	 * @print erro se existir
-	 * @param token token de recuperacao de senha
-	 * @param categorias categorias a serem incrementadas
-	 * @return true se bem sucedido
-	 */
-	public boolean addCategoria(String token, String[] categorias) {
-		// False ate se provar o contrario
-		boolean result = false;
-		try {
-			// Recuperacao do ID atraves do token gerado e conexao
-			int id = -1;
-			PreparedStatement stmt;
-			ResultSet rs;
-			String sql = "";
-			sql += "SELECT id FROM planejy.usuario WHERE token = ?";
-
-			stmt = getConnection().prepareStatement(sql);
-			stmt.setString(1, token);
-			rs = stmt.executeQuery();
-
-			if (rs.next()) {
-				id = (rs.getInt("id"));
-			} else {
-				id = -1;
-			}
-
-			// Efetivar a atualizacao dos dados
-			if (id != -1) {
-				// Conexao, construcao e execucao
-				sql = "UPDATE planejy.classificacao_usuario SET ";
-				for (int i = 0; i < categorias.length; i++) {
-					sql += categorias[i];
-					sql += " = ";
-					sql += categorias[i];
-					sql += " +1";
-					if (i < categorias.length - 1) {
-						sql += ", ";
-					}
-				}
-				sql += " WHERE id_usuario = ?";
-
-				stmt = getConnection().prepareStatement(sql);
-				stmt.setInt(1, id);
-				stmt.executeQuery();
-
-				result = true;
-			}
-
-			stmt.close();
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		return result;
-	}
+	
 }
