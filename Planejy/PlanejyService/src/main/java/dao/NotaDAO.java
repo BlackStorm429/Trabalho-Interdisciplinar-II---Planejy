@@ -61,7 +61,7 @@ public class NotaDAO extends DAO {
 			ResultSet rs = stmt.executeQuery();
 			// Para cada linha retornada adicionar uma nota a Pilha
 			while (rs.next()) {
-				Nota p = new Nota(rs.getLong("chave"), rs.getInt("id_usuario"), rs.getString("titulo"),
+				Nota p = new Nota(rs.getInt("chave"), rs.getInt("id_usuario"), rs.getString("titulo"),
 						rs.getDate("dia"),
 						rs.getString("descricao"), rs.getTime("horario"), rs.getString("categoria"),
 						rs.getString("cor"));
@@ -78,7 +78,7 @@ public class NotaDAO extends DAO {
 	/**
 	 * Metodo POST para adicionar ao Banco de Dados a nota desejada
 	 * 
-	 * Os dados da nota sao recebidos atraves de uma String body que e' parseada no
+	 * Os dados da nota sao recebidos atraves de uma String body que e' barseada no
 	 * construtor da classe. E necessario um token de acesso unico do usuario para
 	 * fazer a insercao da nota
 	 * 
@@ -93,11 +93,12 @@ public class NotaDAO extends DAO {
 		boolean status = false;
 		// Criacao da nota atraves do body
 		Nota nota = new Nota(body);
+		System.out.println(nota.getChave());
 		try {
 			// ID selecionado atraves do token
 			String sql = "";
-			sql += "INSERT INTO nota (id_usuario, titulo, dia, descricao, horario, categoria, cor) ";
-			sql += "VALUES ((SELECT id FROM usuario WHERE token = ?), ?, ?, ?, ?, ?, ?)";
+			sql += "INSERT INTO nota (id_usuario, titulo, dia, descricao, horario, categoria, cor, chave) ";
+			sql += "VALUES ((SELECT id FROM usuario WHERE token = ?), ?, ?, ?, ?, ?, ?, ?)";
 			// Conexao
 			PreparedStatement stmt = getConnection().prepareStatement(sql);
 			stmt.setString(1, token);
@@ -107,6 +108,7 @@ public class NotaDAO extends DAO {
 			stmt.setTime(5, Time.valueOf(nota.getHorario())); 
 			stmt.setString(6, nota.getCategoria());
 			stmt.setString(7, nota.getCor());
+			stmt.setLong(8, nota.getChave());
 			stmt.executeUpdate();
 			// Fechar conexao
 			stmt.close();
@@ -166,7 +168,7 @@ public class NotaDAO extends DAO {
 	 * @param body  dados da nota para construtor da classe
 	 * @return status da query, true se bem sucedido
 	 */
-	public boolean update(String token, long chave, String body) {
+	public boolean update(String token, int chave, String body) {
 		// Falso ate se tornar verdadeiro
 		boolean status = false;
 		// Criacao da nota atraves do body
@@ -176,7 +178,7 @@ public class NotaDAO extends DAO {
 			String sql = "";
 			sql += "UPDATE nota SET titulo = ?, dia = ?, descricao = ?, horario = ?, categoria = ?, cor = ? ";
 			sql += "WHERE chave = ? AND id_usuario = (SELECT id FROM usuario WHERE token = ?)";
-			
+		
 			// Conexao
 			PreparedStatement stmt = getConnection().prepareStatement(sql);
 			stmt.setString(1, nota.getTitulo());
