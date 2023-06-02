@@ -3,6 +3,7 @@ package model;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.text.ParseException;
@@ -22,7 +23,7 @@ import java.text.ParseException;
  * @method toJson
  */
 public class Nota {
-    private long chave;
+    private int chave;
     private int idUsuario;
     private String titulo;
     private Date dia;
@@ -37,7 +38,7 @@ public class Nota {
      * Construtor padrao
      */
     public Nota() {
-        this.chave = -1;
+        this.chave = geradorAleatorio();
         this.idUsuario = -1;
         this.titulo = "";
         this.dia = new Date();
@@ -57,7 +58,7 @@ public class Nota {
     public Nota(String body) {
         String tmp[] = body.split(";");
 
-        this.chave = -1;
+        this.chave = geradorAleatorio();
         this.idUsuario = Integer.parseInt(tmp[0]);
         this.titulo = tmp[1];
         try {
@@ -78,7 +79,7 @@ public class Nota {
      * @param body  corpo sem a chave
      * @param chave primary key
      */
-    public Nota(String body, long chave) {
+    public Nota(String body, int chave) {
         String tmp[] = body.split(";");
 
         this.chave = chave;
@@ -107,7 +108,7 @@ public class Nota {
      * @param categoria
      * @param cor
      */
-    public Nota(long chave, int idUsuario, String titulo, Date dia, String descricao, Time time,
+    public Nota(int chave, int idUsuario, String titulo, Date dia, String descricao, Time time,
             String categoria, String cor) {
         this.chave = chave;
         this.idUsuario = idUsuario;
@@ -120,7 +121,7 @@ public class Nota {
         this.next = null;
     }
 
-    public long getChave() {
+    public int getChave() {
         return this.chave;
     }
 
@@ -154,6 +155,13 @@ public class Nota {
 
     public Nota getNext() {
         return this.next;
+    }
+    
+    
+	private int geradorAleatorio() {
+		Random n = new Random();
+		int aleatorio = n.nextInt();
+    	return (aleatorio < 0)?(aleatorio = aleatorio*-1):aleatorio;
     }
 
     /**
