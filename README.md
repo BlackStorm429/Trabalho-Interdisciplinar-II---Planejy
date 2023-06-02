@@ -1,4 +1,4 @@
-<h1>**Trabalho Interdisciplinar II: Banco de Dados e Sistemas Inteligentes**<h1>
+<h1>**Trabalho Interdisciplinar II: Banco de Dados e Sistemas Inteligentes**/<h1>
 
 > Repositório do projeto Planejy do Trabalho Interdisciplinar II: Banco de Dados e Sistemas Inteligentes do curso de Ciência da Computação da PUC Minas - Pontifícia Universidade Católica de Minas Gerais.
 
