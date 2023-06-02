@@ -1,9 +1,7 @@
 package app;
 
 import static spark.Spark.*;
-import service.ArtigoService;
 import service.NotaService;
-import service.ProfissionalService;
 import service.UsuarioService;
 import spark.Filter;
 
@@ -15,9 +13,7 @@ import spark.Filter;
  */
 public class Aplicacao {
 
-        private static ArtigoService artigoService = new ArtigoService();
         private static NotaService notaService = new NotaService();
-        private static ProfissionalService profissionalService = new ProfissionalService();
         private static UsuarioService usuarioService = new UsuarioService();
 
         /**
@@ -41,30 +37,6 @@ public class Aplicacao {
                         response.header("Access-Control-Allow-Methods", "GET, POST");
                 });
 
-                /* -------------------------- ARTIGOS ------------------------- */
-                // Receber artigo pela chave - Artigos_inside.html
-                get("/articles/receive/:chave/:tokenUsuario",
-                                (request, response) -> artigoService.get(request, response));
-                // Receber todos os artigos - Artigos.html
-                get("/articles/all/:tokenUsuario",
-                                (request, response) -> artigoService.getAll(request, response));
-                // Avaliar artigo
-                post("/articles/avaliar/:tokenUsuario/:chave/:nota",
-                                (request, response) -> artigoService.avaliar(request, response));
-                // Tempo de consumo do artigo
-                post("/articles/tempo/:tokenUsuario/:chave",
-                                (request, response) -> artigoService.tempo(request, response));
-                                
-                /* ----------------------- PROFISSIONAIS ---------------------- */
-                // Receber todos os profissionais - Profissionais.html
-                get("/profissional/all/:tokenUsuario",
-                                (request, response) -> profissionalService.getAll(request, response));
-                // Avaliar profissional
-                post("/profissional/avaliar/:tokenUsuario/:registro_profissional/:nota",
-                                (request, response) -> profissionalService.avaliar(request, response));
-                // Recuperar avaliacoes de profissionais
-                get("/profissional/:chave/:tokenUsuario",
-                                (request, response) -> profissionalService.getNth(request, response));
 
                 /* ------------------------ CALENDARIO ------------------------ */
                 // Todas as validacoes sao feitas pelo token do usuario
@@ -97,9 +69,5 @@ public class Aplicacao {
                 // Excluir um usuario a partir do seu ID e Token
                 get("/usuario/Excluir/:token/:id", (request, response) -> usuarioService.delete(request, response));
 
-                /* ---------------------- CLASSIFICACAO ---------------------- */
-                // Atualizar categoria do usuario
-                post("/categoria/add/:tokenUsuario",
-                                (request, response) -> usuarioService.addCategoria(request, response));
         }
 }
